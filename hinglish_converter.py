@@ -86,6 +86,7 @@ class HinglishConverter:
             "र": "r",
             "ल": "l",
             "व": "v",
+            "व": "w",  # Alternative
             # Sibilants
             "श": "sh",
             "ष": "sh",
@@ -96,6 +97,7 @@ class HinglishConverter:
             "क्ष": "ksh",
             "त्र": "tr",
             "ज्ञ": "gy",
+            "ज्ञ": "gyn",  # Alternative
             "श्र": "shr",
             "क़": "q",
             "ख़": "kh",
@@ -105,6 +107,41 @@ class HinglishConverter:
             "ड़": "r",
             "ढ़": "rh",
             "फ़": "f",
+        }
+
+        # Common suffix patterns for smarter transliteration
+        self.suffix_patterns = {
+            # Verb conjugations
+            "ना": "na",  # karna -> karna
+            "नी": "ni",  # karni -> karni
+            "ने": "ne",  # karne -> karne
+            "ा": "a",  # kiya -> kiya ( masculine past)
+            "ी": "i",  # kiyi -> kiyi (feminine past)
+            "े": "e",  # kare -> kare (subjunctive)
+            "ें": "en",  # karen -> karen (plural subjunctive)
+            "ो": "o",  # karo -> karo (imperative)
+            "ता": "ta",  # karta -> karta (present continuous masc)
+            "ती": "ti",  # karti -> karti (present continuous fem)
+            "ते": "te",  # karte -> karte (present continuous plural)
+            "ों": "on",  # "on" sound (plural oblique)
+            "ां": "an",  # "aan" sound (plural oblique fem)
+            "ई": "i",  # feminine ending
+            "ए": "e",  # plural ending
+            "इए": "iye",  # respectful request
+            "िए": "iye",  # alternate
+            "आ": "aa",  # masculine ending
+            "आओ": "aao",  # plural request
+            "ूँ": "oon",  # first person ending
+            "ूं": "oon",  # alternate
+        }
+
+        # Common prefixes
+        self.prefix_patterns = {
+            "अ": "a",
+            "आ": "aa",
+            "अन": "an",
+            "बे": "be",
+            "घ": "gh",
         }
 
         # Half consonants (when combined with virama)
@@ -232,9 +269,10 @@ class HinglishConverter:
             "लिया": "liya",
             "दिया": "diya",
             "पड़ा": "pada",
-            "वाला": "wala",
-            "वाली": "wali",
-            "वाले": "wale",
+            "वाला": "waala",
+            "वाली": "waali",
+            "वाले": "waale",
+            "वालों": "waalon",
             "भी": "bhi",
             "ही": "hi",
             "तो": "to",
@@ -601,7 +639,275 @@ class HinglishConverter:
             "रोके": "roke",
             "हंसके": "hanske",
             "मुस्कुराके": "muskurake",
+            # Additional words for better coverage
+            "त्योहार": "tyohaar",
+            "वाईफाई": "wifi",
+            "लड़कियों": "ladkiyon",
+            "लड़कियाँ": "ladkiyaan",
+            "दीपावली": "deepaavali",
+            "दीवाली": "diwali",
+            "शहर": "shehar",
+            "शहरों": "sheharon",
+            "गांव": "gaanv",
+            "गांवों": "gaanvon",
+            "दोस्तों": "doston",
+            "बच्चों": "bachchon",
+            "बच्चे": "bachche",
+            "लोगों": "logon",
+            "घरों": "gharon",
+            "मकानों": "makaanon",
+            "दुकानें": "dukaanein",
+            "दुकानों": "dukaanon",
+            "बातें": "baatein",
+            "रातें": "raatein",
+            "सड़कें": "sadkein",
+            "गलियाँ": "galiyan",
+            "कहानियाँ": "kahaaniyaan",
+            "कहानियां": "kahaaniyaan",
+            "फिल्में": "filmein",
+            "चिट्ठी": "chitthi",
+            "चिट्ठियाँ": "chitthiyaan",
+            # Essential common words that were missing
+            "में": "mein",
+            "को": "ko",
+            "से": "se",
+            "ने": "ne",
+            "का": "ka",
+            "की": "ki",
+            "के": "ke",
+            "हो": "ho",
+            "वो": "wo",
+            "वह": "woh",
+            "यह": "yeh",
+            "सब": "sab",
+            "उस": "us",
+            "इस": "is",
+            "जो": "jo",
+            "तो": "toh",
+            "ही": "hi",
+            "भी": "bhi",
+            "था": "tha",
+            "थी": "thi",
+            "थे": "the",
+            "हूँ": "hoon",
+            "हैं": "hain",
+            "गया": "gaya",
+            "गई": "gayi",
+            "गए": "gaye",
+            "आया": "aaya",
+            "आई": "aayi",
+            "आए": "aaye",
+            "लिया": "liya",
+            "दिया": "diya",
+            "किया": "kiya",
+            "रहा": "raha",
+            "रही": "rahi",
+            "रहे": "rahe",
+            "चला": "chala",
+            "देखा": "dekha",
+            "सुना": "suna",
+            "बोला": "bola",
+            "पढ़ा": "padha",
+            "लिखा": "likha",
+            "खाना": "khana",
+            "पाना": "paana",
+            "जाना": "jaana",
+            "आना": "aana",
+            "लेना": "lena",
+            "देना": "dena",
+            "पीना": "peena",
+            "सोना": "sona",
+            "होना": "hona",
+            "रहना": "rehna",
+            "कहना": "kehna",
+            "सुनना": "sunna",
+            "देखना": "dekhna",
+            "समझना": "samajhna",
+            "बोलना": "bolna",
+            "चलना": "chalna",
+            "मिलना": "milna",
+            "बैठना": "baithna",
+            "उठना": "uthna",
+            "सोचना": "sochna",
+            "मानना": "maanna",
+            "जानना": "jaanna",
+            "पहचानना": "pehchaanna",
+            "बचाना": "bachaana",
+            "बताना": "bataana",
+            "सिखाना": "sikhaana",
+            "बुलाना": "bulaana",
+            "भेजना": "bhejna",
+            "मांगना": "maangna",
+            "लगाना": "lagaana",
+            "रखना": "rakhna",
+            "दिखाना": "dikhaana",
+            "निकालना": "nikaalna",
+            "डालना": "daalna",
+            "फेंकना": "fenkna",
+            "तोड़ना": "todna",
+            "जोड़ना": "jodna",
+            "खोलना": "kholna",
+            "चाहना": "chaahna",
+            "चाहिए": "chahiye",
+            "पसंद": "pasand",
+            "मालूम": "maaloom",
+            "पता": "pata",
+            "समझ": "samajh",
+            "सोच": "soch",
+            "बात": "baat",
+            "काम": "kaam",
+            "वक्त": "waqt",
+            "दिन": "din",
+            "रात": "raat",
+            "सुबह": "subah",
+            "शाम": "shaam",
+            "दोपहर": "dopahar",
+            "आज": "aaj",
+            "कल": "kal",
+            "परसों": "parson",
+            "हफ्ता": "hafta",
+            "महीना": "mahina",
+            "साल": "saal",
+            "पहले": "pehle",
+            "बाद": "baad",
+            "जल्दी": "jaldi",
+            "देर": "der",
+            "अभी": "abhi",
+            "बादमें": "baad mein",
+            "थोड़ा": "thoda",
+            "थोड़ी": "thodi",
+            "ज्यादा": "zyada",
+            "बहुत": "bahut",
+            "कम": "kam",
+            "कुछ": "kuchh",
+            "सारा": "saara",
+            "पूरा": "poora",
+            "आधा": "aadha",
+            "बाकी": "baaki",
+            "आदमी": "aadmi",
+            "औरत": "aurat",
+            "लड़का": "ladka",
+            "लड़की": "ladki",
+            "बच्चा": "bachcha",
+            "इंसान": "insaan",
+            "दोस्त": "dost",
+            "यार": "yaar",
+            "माँ": "maa",
+            "पापा": "papa",
+            "पिता": "pita",
+            "माता": "maata",
+            "भाई": "bhai",
+            "बहन": "behan",
+            "बेटा": "beta",
+            "बेटी": "beti",
+            "पति": "pati",
+            "पत्नी": "patni",
+            "नानी": "nani",
+            "दादी": "dadi",
+            "नाना": "nana",
+            "दादा": "dada",
+            "घर": "ghar",
+            "दरवाज़ा": "darvaaza",
+            "दीवार": "deevaar",
+            "छत": "chhat",
+            "फर्श": "farsh",
+            "कमरा": "kamra",
+            "रसोई": "rasoi",
+            "बाथरूम": "bathroom",
+            "बैठक": "baithak",
+            "बगीचा": "bageecha",
+            "गली": "gali",
+            "सड़क": "sadak",
+            "बाज़ार": "baazaar",
+            "दुकान": "dukaan",
+            "शहर": "shehar",
+            "गांव": "gaanv",
+            "देश": "desh",
+            "दुनिया": "duniya",
+            "जगह": "jagah",
+            "कहीं": "kahin",
+            "जहाँ": "jahaan",
+            "वहाँ": "vahaan",
+            "यहाँ": "yahaan",
+            "सामने": "saamne",
+            "पीछे": "peechhe",
+            "आगे": "aage",
+            "ऊपर": "upar",
+            "नीचे": "neeche",
+            "दाएँ": "daayen",
+            "बाएँ": "baayen",
+            "अंदर": "andar",
+            "बाहर": "baahar",
+            "साथ": "saath",
+            "पास": "paas",
+            "दूर": "door",
+            "पानी": "paani",
+            "दूध": "doodh",
+            "चाय": "chai",
+            "दवा": "dawa",
+            "दवाई": "dawaai",
+            "किताब": "kitaab",
+            "कागज़": "kaagaz",
+            "पन्ना": "panna",
+            "अख़बार": "akhbaar",
+            "पत्रिका": "patrika",
+            "चिट्ठी": "chitthi",
+            "तस्वीर": "tasveer",
+            "गाड़ी": "gaadi",
+            "बस": "bus",
+            "ट्रेन": "train",
+            "हवाईजहाज़": "hawaaijahaaz",
+            "साइकिल": "cycle",
+            "सड़क": "sadak",
+            "रास्ता": "rasta",
+            "पुल": "pul",
+            "स्टेशन": "station",
+            "पार्क": "park",
+            "होटल": "hotel",
+            "अस्पताल": "aspatal",
+            "मंदिर": "mandir",
+            "मस्जिद": "masjid",
+            "गिरजा": "girja",
+            "गुरुद्वारा": "gurudwara",
+            "दुकान": "dukaan",
+            "बैंक": "bank",
+            "डाकखाना": "daakkhana",
+            "थाना": "thaana",
+            "विद्यालय": "vidyaalay",
+            "कॉलेज": "college",
+            "अदालत": "adaalat",
+            "दफ़्तर": "daftar",
+            "चैनल": "channel",
+            "सिनेमा": "cinema",
+            "थिएटर": "theater",
+            "म्यूज़ियम": "museum",
+            "पुस्तकालय": "pustakaalay",
+            "ब्यूटीपार्लर": "beautyparlour",
+            "सैलून": "saloon",
+            "जेल": "jail",
+            "कब्रिस्तान": "kabristaan",
+            "श्मशान": "shmashaan",
+            "मेला": "mela",
+            "हाट": "haat",
+            "बाज़ार": "baazaar",
+            "मार्केट": "market",
+            "मॉल": "mall",
+            "दुकान": "dukaan",
+            "किराना": "kiraana",
+            "सब्जी": "sabzi",
+            "मिठाई": "mithaai",
+            "हलवाई": "halwaai",
+            "नाई": "naai",
+            "दर्जी": "darzi",
+            "मोची": "mochi",
+            "लुहार": "luhaar",
+            "बढ़ई": "badhai",
+            "कुम्हार": "kumhaar",
+            "जुलाहा": "julaaha",
         }
+
+        # Build reverse lookup for partial matching (after common_words is defined)
+        self._build_reverse_lookup()
 
         # Build combined character list for tokenization
         self.all_hindi_chars = set(
@@ -664,6 +970,7 @@ class HinglishConverter:
     def _apply_schwa_deletion(self, result: str) -> str:
         """
         Apply schwa deletion and vowel normalization rules for natural Hinglish.
+        More conservative approach - only apply well-established patterns.
         """
         if len(result) <= 2:
             return result
@@ -671,34 +978,50 @@ class HinglishConverter:
         original = result
         result_lower = result.lower()
 
-        # Common verb infinitive endings: -na (should be -na not -n)
-        if result_lower.endswith("ana") and len(result) > 4:
-            # bolana -> bolna, karna -> karna (keep), dekhana -> dekhna
-            stem = result[:-3]
-            if stem and stem[-1] not in "aeiou":
-                result = stem + "na"
+        # DON'T over-process: keep common verb forms intact
+        # Only apply schwa deletion for clear cases
 
-        # Past tense / continuous: -ta, -te, -ti (should drop middle 'a' sometimes)
-        # chalate -> chalte, karta -> karta (keep)
-        if result_lower.endswith("ate") and len(result) > 4:
+        # Pattern 1: -ana -> -na for infinitives (but be careful)
+        # Only apply to longer stems to avoid false positives
+        if result_lower.endswith("ana") and len(result) > 5:
             stem = result[:-3]
-            result = stem + "te"
-        if result_lower.endswith("ati") and len(result) > 4:
-            stem = result[:-3]
-            result = stem + "ti"
-        if result_lower.endswith("ata") and len(result) > 4:
-            # Check if it's a 3-syllable pattern
-            stem = result[:-3]
-            if len(stem) >= 3:
-                result = stem + "ta"
+            # Check stem doesn't end with vowel
+            if stem and stem[-1].lower() not in "aeiou":
+                # Be conservative: only if stem looks like a verb root
+                # Don't apply to: paana, jaana, laana, aana, etc.
+                if not any(
+                    x in result_lower
+                    for x in ["paana", "jaana", "laana", "aana", "gaana"]
+                ):
+                    result = stem + "na"
 
-        # Feminine -ee -> -i at end of words
-        # lagee -> lagi, chhotee -> chhoti
-        if result_lower.endswith("ee") and len(result) > 3:
-            # Check if it's a feminine form
-            result = result[:-2] + "i"
+        # Pattern 2: Continuous tense forms
+        # -ata/-ati/-ate should become -ta/-ti/-te in longer words
+        # But NOT for: data, gata, etc.
+        if len(result) > 5:
+            if result_lower.endswith("ate") and not result_lower.endswith("gate"):
+                stem = result[:-3]
+                if len(stem) >= 4:
+                    result = stem + "te"
+            elif result_lower.endswith("ati") and not result_lower.endswith("gati"):
+                stem = result[:-3]
+                if len(stem) >= 4:
+                    result = stem + "ti"
+            elif result_lower.endswith("ata") and not result_lower.endswith("gata"):
+                stem = result[:-3]
+                if len(stem) >= 4:
+                    result = stem + "ta"
 
-        # Final 'a' deletion for non-verb words
+        # Pattern 3: Feminine forms -ee -> -i
+        # Common pattern but be careful with names
+        if result_lower.endswith("ee") and len(result) > 4:
+            # Check if it's likely a feminine verb form
+            # Don't change: Puneet, Sangeet, etc. (keep those with ee)
+            if not result_lower.startswith(("p", "s", "r", "n")):
+                result = result[:-2] + "i"
+
+        # Pattern 4: Final 'a' deletion - BE VERY CAREFUL
+        # Only delete from long words where it's clearly not needed
         keep_final_a = {
             "papa",
             "mama",
@@ -721,29 +1044,238 @@ class HinglishConverter:
             "haana",
             "yaar",
             "saara",
+            "khana",
+            "pina",
+            "sona",
+            "rona",
+            "hona",
+            "lena",
+            "dena",
+            "aana",
+            "jaana",
+            "paana",
+            "laana",
+            "gaana",
+            "khana",
+            "rahana",
+            "kahana",
+            "sunana",
+            "dekhana",
+            "bolana",
+            "pita",
+            "maata",
+            "dadi",
+            "nani",
+            "dada",
+            "nana",
+            "beta",
+            "beti",
+            "bhai",
+            "behen",
+            "maan",
+            "baap",
+            "haan",
+            "naa",
+            "jahan",
+            "vahan",
+            "yahan",
+            "kahan",
+            "ki",
+            "ka",
+            "ke",
+            "ko",
+            "se",
+            "me",
+            "ne",
+            "he",
         }
 
+        # Only delete final 'a' from longer words (>4 chars) and if not in keep list
         if result_lower.endswith("a") and result_lower not in keep_final_a:
-            if len(result) > 3:
-                # Don't delete from verb forms
-                verb_keep = {"na", "ta", "ti", "te", "ni", "ne", "ya"}
-                if result_lower[-2:] not in verb_keep:
-                    result = result[:-1]
+            if len(result) > 4:
+                # Check if it's a verb ending
+                verb_endings = ("na", "ta", "ti", "te", "ni", "ne", "ya")
+                if not result_lower.endswith(verb_endings):
+                    # One more check: don't delete if word ends with consonant + a
+                    # This preserves words like "karna", "hona"
+                    if result_lower[-2] in "aeiou":
+                        result = result[:-1]
 
-        # Middle 'a' deletion in common patterns
-        # bharaata -> bharat
-        if "aa" in result_lower:
-            # Reduce double a to single a
-            result = result.replace("aa", "a")
+        # Pattern 5: Reduce triple vowels and excessive doubles
+        # aa -> a (but keep in specific words)
+        if "aa" in result_lower and len(result) > 5:
+            # Be selective: only reduce in longer words
+            # Don't reduce: gaana, paana, jaana, laana, haana, shaana, maana
+            keep_double_a = [
+                "gaana",
+                "paana",
+                "jaana",
+                "laana",
+                "haana",
+                "shaana",
+                "maana",
+                "saara",
+                "kaale",
+                "baarah",
+                "saal",
+                "daal",
+                "kaagaz",
+            ]
+            if not any(x in result_lower for x in keep_double_a):
+                # Reduce only one occurrence
+                result = result.replace("aa", "a", 1)
 
         return result
 
+    def _build_reverse_lookup(self):
+        """Build a reverse lookup for pattern-based matching."""
+        # This helps find words by their endings
+        self.word_by_suffix = {}
+        for word, hinglish in self.common_words.items():
+            # Index by last 2-4 characters
+            for i in range(2, min(5, len(word) + 1)):
+                suffix = word[-i:]
+                if suffix not in self.word_by_suffix:
+                    self.word_by_suffix[suffix] = []
+                self.word_by_suffix[suffix].append((word, hinglish))
+
+    def _find_similar_word(self, word: str) -> str | None:
+        """
+        Try to find a similar word in dictionary using suffix matching.
+        This handles variations like tyohaar/tyohar, dukaan/dukaanein etc.
+        """
+        # Try exact match first
+        if word in self.common_words:
+            return self.common_words[word]
+
+        # Only use suffix matching for clear plural/oblique forms
+        # Check if word ends with known plural/oblique suffixes
+        known_suffixes = {
+            "ें": "ein",  # dukaan -> dukaanein
+            "ों": "on",  # bachcha -> bacchon
+            "ीं": "iin",  # thiin
+            "ों": "on",
+            "एं": "ein",
+        }
+
+        for suffix, hinglish_suffix in known_suffixes.items():
+            if word.endswith(suffix):
+                # Get the base word by removing suffix
+                base = word[: -len(suffix)]
+                if base in self.common_words:
+                    # Combine base form with suffix
+                    return self.common_words[base] + hinglish_suffix
+
+        return None
+
+    def _adapt_word_form(
+        self, word: str, pattern_word: str, pattern_hinglish: str
+    ) -> str:
+        """
+        Adapt a hinglish pattern to a new word form.
+        e.g., if we know 'दुकान' -> 'dukaan', we can infer 'दुकानें' -> 'dukaanein'
+        """
+        # Simple heuristic: if word is longer, add common plural/oblique endings
+        if len(word) > len(pattern_word):
+            extra = len(word) - len(pattern_word)
+            if word.endswith("ें"):
+                return pattern_hinglish + "ein"
+            elif word.endswith("ों"):
+                return pattern_hinglish + "on"
+            elif word.endswith("ी"):
+                return pattern_hinglish + "i"
+            elif word.endswith("े"):
+                return pattern_hinglish + "e"
+
+        return pattern_hinglish
+
+    def _try_suffix_lookup(self, word: str) -> str | None:
+        """
+        Try to match word by its suffix patterns.
+        Helps with conjugated verbs and declined nouns.
+        """
+        # Try matching last 2-3 characters against known suffixes
+        for length in [3, 2]:
+            if len(word) >= length:
+                suffix = word[-length:]
+                if suffix in self.suffix_patterns:
+                    # Get the base by removing suffix
+                    base = word[:-length]
+                    if base in self.common_words:
+                        # Combine base form with suffix transliteration
+                        return self.common_words[base] + self.suffix_patterns[suffix]
+
+        return None
+
+    def _apply_smart_schwa(self, word: str) -> str:
+        """
+        Apply intelligent schwa deletion based on word patterns.
+        CONSERVATIVE approach - only apply safe, well-established patterns.
+        """
+        if len(word) <= 2:
+            return word
+
+        wl = word.lower()
+        original = word
+
+        # DON'T apply aggressive rules here - _apply_schwa_deletion already did the work
+        # Only fix specific issues that slip through
+
+        # Rule 1: Fix triple+ vowels (clearly wrong)
+        # aaa -> aa, eee -> ee, etc.
+        import re
+
+        word = re.sub(r"([aeiou])\1{2,}", r"\1\1", word, flags=re.IGNORECASE)
+
+        # Rule 2: Fix common consonant doubling issues
+        # Don't double consonants unnecessarily
+        # But preserve valid doubles like: mm, nn, ll, ss, tt
+        word = re.sub(r"([b-df-hj-np-tv-z])\1{2,}", r"\1\1", word, flags=re.IGNORECASE)
+
+        # Rule 3: Specific ending fixes for very common errors
+        # These are only applied if the word is not in dictionary
+        ending_fixes = {
+            "aei": "ei",  # dukaaei -> dukaei (but we want dukaanein)
+            "aee": "ee",  # gaanee -> ganee (but we want gaana)
+        }
+
+        for wrong, right in ending_fixes.items():
+            if word.lower().endswith(wrong):
+                # Only apply to longer words to avoid breaking short ones
+                if len(word) > 5:
+                    word = word[: -len(wrong)] + right
+
+        # Rule 4: Preserve dictionary words exactly
+        # Check if original form exists in dictionary (case insensitive)
+        word_lower = word.lower()
+        for hw, he in self.common_words.items():
+            if hw.lower() == word_lower:
+                return he
+
+        return word
+
     def _transliterate_word(self, word: str) -> str:
-        """Transliterate a single Hindi word to Hinglish"""
+        """
+        Transliterate a single Hindi word to Hinglish.
+        Uses dictionary lookup first, then pattern matching, then rule-based.
+        """
+        # Skip empty words
+        if not word:
+            return ""
 
         # Check if it's in common words dictionary
         if word in self.common_words:
             return self.common_words[word]
+
+        # Try to find similar word pattern
+        similar = self._find_similar_word(word)
+        if similar:
+            return similar
+
+        # Try suffix-based lookup for known patterns
+        suffix_match = self._try_suffix_lookup(word)
+        if suffix_match:
+            return suffix_match
 
         result = []
         i = 0
@@ -853,9 +1385,95 @@ class HinglishConverter:
 
         # Join and apply schwa deletion
         final_result = "".join(result)
+        # Apply both old and new schwa rules for better accuracy
         final_result = self._apply_schwa_deletion(final_result)
+        final_result = self._apply_smart_schwa(final_result)
+
+        # Post-processing: fix common issues
+        final_result = self._post_process(final_result)
 
         return final_result
+
+    def _post_process(self, text: str) -> str:
+        """
+        Post-process to fix common transliteration issues.
+        This is the final step to catch common errors.
+        """
+        import re
+
+        original_text = text
+        text_lower = text.lower()
+
+        # Common problematic patterns and their fixes
+        # Only apply to whole words or clear patterns
+        replacements = {
+            # Vowel issues
+            "aaee": "aee",  # Error pattern
+            "aee": "ae",  # Simplify
+            "ooee": "ui",  # Common error
+            "eeee": "ee",  # Quadruple e
+            "aaaa": "aa",  # Quadruple a
+            "eeee": "ee",  # Triple e fix
+            "uuuu": "uu",  # Quadruple u
+            # Consonant clusters that are commonly wrong
+            "kshn": "kshan",  # For words like "kshan" (moment)
+            "kshm": "kshm",  # Keep as is
+            "tn": "tan",  # Better to have 'tan' than 'tn'
+            "dn": "dan",  # Better to have 'dan' than 'dn'
+            "pn": "pan",  # Better to have 'pan' than 'pn'
+            "gn": "gan",  # Better to have 'gan' than 'gn'
+            # English loanwords (common errors)
+            "wifai": "wifi",
+            "skool": "school",
+            "fona": "phone",
+            "mobail": "mobile",
+            "intar": "inter",
+            "neta": "net",
+            "dileev": "deliv",
+            "kaemp": "camp",
+            "kemp": "camp",
+            "steshn": "station",
+            "stesha": "station",
+            "bilding": "building",
+            "beech": "beach",
+            "helo": "hello",
+            "hal": "haal",
+            "bhaiya": "bhaiya",
+            "bhaiyya": "bhaiya",
+            # Common Hindi word fixes
+            "tyohara": "tyohaar",
+            "dukaana": "dukaan",
+            "khanaa": "khana",
+            "paanee": "paani",
+            "vaalaa": "waala",
+            "vaalee": "waali",
+            "vaale": "waale",
+            # Schwa deletion over-corrections
+            "rahana": "rahna",  # Sometimes we want this
+            "kahana": "kehna",  # Sometimes we want this
+        }
+
+        # Apply replacements conservatively
+        for old, new in replacements.items():
+            # Only replace if it forms a complete pattern
+            # Use word boundaries for short patterns
+            if len(old) <= 4:
+                # For short patterns, be more careful
+                text = re.sub(r"\b" + old + r"\b", new, text, flags=re.IGNORECASE)
+            else:
+                # For longer patterns, can be more liberal
+                text = text.replace(old, new)
+                # Also try case-insensitive
+                if text == original_text:
+                    text = re.sub(old, new, text, flags=re.IGNORECASE)
+
+        # Fix multiple spaces
+        text = re.sub(r" +", " ", text)
+
+        # Ensure proper spacing after punctuation
+        text = re.sub(r"([.!?])([^ ])", r"\1 \2", text)
+
+        return text
 
     def convert(self, text: str, use_cache: bool = True) -> str:
         """
