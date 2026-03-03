@@ -1,0 +1,11 @@
+# Hindi to Hinglish Converter
+# A Python project that converts Hindi text to natural conversational Hinglish
+
+# Core dependencies
+indic-transliteration>=2.3.0
+pandas>=1.5.0
+
+# Optional dependencies for development
+pytest>=7.0.0
+black>=22.0.0
+flake8>=5.0.0
