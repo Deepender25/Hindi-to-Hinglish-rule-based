@@ -730,8 +730,15 @@ class SmartHybridConverter:
         return any(indicator in word for indicator in english_indicators)
 
     def _api_get_english(self, word: str) -> Optional[str]:
-        """Use API to get English spelling for loanwords"""
+        """Use API to get English spelling for loanwords using hi-Latn"""
         if not self.api_available:
+            return None
+
+        try:
+            # Use hi-Latn for better Romanized Hindi transliteration
+            result = self.translator.translate(word, src="hi", dest="hi-Latn")
+            return result.text.lower().strip()
+        except:
             return None
 
         try:
