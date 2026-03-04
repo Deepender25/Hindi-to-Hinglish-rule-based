@@ -176,13 +176,22 @@ Hinglish:"""
         if not gemini_output:
             return rule_output, "rule"
 
-        # Normalize for comparison
-        rule_norm = rule_output.lower().replace(" ", "")
-        gemini_norm = gemini_output.lower().replace(" ", "")
+        # Normalize for comparison (remove spaces and punctuation)
+        import string
 
-        # Check if they're similar
+        def normalize(text: str) -> str:
+            text = text.lower().replace(" ", "")
+            # Remove punctuation for comparison
+            text = text.translate(str.maketrans("", "", string.punctuation))
+            return text
+
+        rule_norm = normalize(rule_output)
+        gemini_norm = normalize(gemini_output)
+
+        # Check if they're similar (ignoring punctuation)
         if rule_norm == gemini_norm:
-            return rule_output, "rule"  # Same result, use rule-based
+            # Same transliteration, return rule-based (prefer original punctuation)
+            return rule_output, "rule"
 
         # Check if Gemini output looks more natural (heuristics)
         # Prefer Gemini if it uses common Hinglish patterns
