@@ -21,3 +21,9 @@ Thumbs.db
 
 # Output files
 test_output.txt
+
+# Environment variables
+.env
+
+# Gemini learned words (keep only rule-based)
+learned_words_gemini.json
