@@ -37,14 +37,14 @@ class HybridGeminiConverter:
     """
 
     def __init__(
-        self, api_key: Optional[str] = None, model_name: str = "gemini-1.5-flash"
+        self, api_key: Optional[str] = None, model_name: str = "gemini-3-flash-preview"
     ):
         """
         Initialize hybrid converter
 
         Args:
             api_key: Gemini API key (or set GEMINI_API_KEY in .env)
-            model_name: Gemini model to use (default: gemini-1.5-flash)
+            model_name: Gemini model to use (default: gemini-3-flash-preview)
         """
         # Rule-based converter (primary)
         self.rule_converter = RuleBasedConverter()
